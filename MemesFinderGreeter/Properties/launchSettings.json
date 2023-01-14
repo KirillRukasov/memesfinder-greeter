@@ -1,0 +1,9 @@
+﻿{
+  "profiles": {
+    "memesfinder_greeter": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7294",
+      "launchBrowser": false
+    }
+  }
+}

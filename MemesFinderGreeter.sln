@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 25.0.1704.2
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MemesFinderGreeter", "MemesFinderGreeter\MemesFinderGreeter.csproj", "{1B6B1E3A-4266-4E5A-8671-9FFA4F06DAAC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C15D5B37-6104-472A-8039-733D11CB0216}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MemesFinderGreeter.Managers", "MemesFinderGreeter.Managers\MemesFinderGreeter.Managers.csproj", "{A730B882-39F5-457C-8787-214E583837E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MemesFinderGreeter.Interfaces", "MemesFinderGreeter.Interfaces\MemesFinderGreeter.Interfaces.csproj", "{34704837-E5EC-4C26-9336-F290BC470FE0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MemesFinderGreeter.Models", "MemesFinderGreeter.Models\MemesFinderGreeter.Models.csproj", "{961BBFF5-8954-4E16-B908-E7999BB41F53}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1B6B1E3A-4266-4E5A-8671-9FFA4F06DAAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B6B1E3A-4266-4E5A-8671-9FFA4F06DAAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B6B1E3A-4266-4E5A-8671-9FFA4F06DAAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B6B1E3A-4266-4E5A-8671-9FFA4F06DAAC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A730B882-39F5-457C-8787-214E583837E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A730B882-39F5-457C-8787-214E583837E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A730B882-39F5-457C-8787-214E583837E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A730B882-39F5-457C-8787-214E583837E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34704837-E5EC-4C26-9336-F290BC470FE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34704837-E5EC-4C26-9336-F290BC470FE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34704837-E5EC-4C26-9336-F290BC470FE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34704837-E5EC-4C26-9336-F290BC470FE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{961BBFF5-8954-4E16-B908-E7999BB41F53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{961BBFF5-8954-4E16-B908-E7999BB41F53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{961BBFF5-8954-4E16-B908-E7999BB41F53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{961BBFF5-8954-4E16-B908-E7999BB41F53}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {43BBD8D6-3A18-48AF-96AF-42BE97205BB2}
+	EndGlobalSection
+EndGlobal
