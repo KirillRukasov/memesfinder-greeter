@@ -2,7 +2,7 @@
 {
 	public interface IGreetingsFormatter
 	{
-		public string FormatGreetingMessage<T>(string template, T chatMember);
+		public string FormatGreetingMessage<T>(string template, T chatMember, IEnumerable<string> adminUsernames);
 	}
 }
 

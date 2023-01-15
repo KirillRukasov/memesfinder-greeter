@@ -1,10 +1,8 @@
-﻿using System;
-namespace MemesFinderGreeter.Options
+﻿namespace MemesFinderGreeter.Options
 {
 	public class GreeterOptions
 	{
-		public string GreetingsMarkdownTemplate { get; set; }
-        public int? GreetingsThreadId { get; set; }
+		public ChatOptions[] ChatOptions { get; set; }
     }
 }
 

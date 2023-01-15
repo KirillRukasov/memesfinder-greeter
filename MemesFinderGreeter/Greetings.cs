@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using MemesFinderGreeter.Extensions;
 using MemesFinderGreeter.Interfaces;
 using MemesFinderGreeter.Options;
 using Microsoft.Azure.WebJobs;
@@ -32,16 +34,33 @@ namespace MemesFinderGreeter
         }
 
         [FunctionName("Greetings")]
-        public async Task Run([ServiceBusTrigger("allmessages", "greeter", Connection = "ServiceBusOptions")]Update tgIncomeMessage)
+        public async Task Run([ServiceBusTrigger("newmembersmessages", "greeter", Connection = "ServiceBusOptions")]Update tgIncomeMessage)
         {
             var newMembers = _chatMemberManager.GetNewChatMember(tgIncomeMessage);
+            if (!newMembers.Any())
+                return;
+
+            var currentChat = tgIncomeMessage.GetChat();
+            var chatAdminsUsernames = await _chatMemberManager.GetChatAdminsUsernames(currentChat.Id);
+            var currentChatOptions = _options.ChatOptions.FirstOrDefault(options => options.ChatId == currentChat.Id);
+
+            if (currentChatOptions is null)
+            {
+                _logger.LogError($"No options set for chat with Id: {currentChat.Id}");
+                return;
+            }
+
             foreach (var member in newMembers)
+            {
+                var formattedGreeting = _greetingsFormatter
+                    .FormatGreetingMessage(currentChatOptions.GreetingsMarkdownTemplate, member, chatAdminsUsernames);
+
                 await _telegramBotClient.SendTextMessageAsync(
                     chatId: member.ChatId,
-                    messageThreadId: _options.GreetingsThreadId,
+                    messageThreadId: currentChatOptions.GreetingsThreadId,
                     parseMode: Telegram.Bot.Types.Enums.ParseMode.MarkdownV2,
-                    text: _greetingsFormatter.FormatGreetingMessage(_options.GreetingsMarkdownTemplate, member)
-                );
+                    text: formattedGreeting);
+            }
         }
     }
 }
