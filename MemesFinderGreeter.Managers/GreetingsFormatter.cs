@@ -15,7 +15,7 @@ namespace MemesFinderGreeter.Managers
                 greetingsBuilder.Replace($"{{{field.Name}}}", field?.GetValue(chatMember)?.ToString());
 
             if (adminUsernames.Any())
-                greetingsBuilder.AppendLine(adminUsernames.Aggregate((f, s) => $"@{f},@{s}"));
+                greetingsBuilder.AppendLine(adminUsernames.Aggregate((f, s) => $"@{f}, @{s}"));
             return greetingsBuilder.ToString();
         }
     }
