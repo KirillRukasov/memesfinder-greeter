@@ -34,7 +34,7 @@ namespace MemesFinderGreeter
         }
 
         [FunctionName("Greetings")]
-        public async Task Run([ServiceBusTrigger("newmembersmessages", "greeter", Connection = "ServiceBusOptions")]Update tgIncomeMessage)
+        public async Task Run([ServiceBusTrigger("allmessages", "greeter", Connection = "ServiceBusOptions")]Update tgIncomeMessage)
         {
             var newMembers = _chatMemberManager.GetNewChatMember(tgIncomeMessage);
             if (!newMembers.Any())
