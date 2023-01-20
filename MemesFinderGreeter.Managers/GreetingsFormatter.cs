@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using MemesFinderGreeter.Interfaces;
+using MemesFinderGreeter.Managers.Extensions;
 
 namespace MemesFinderGreeter.Managers
 {
@@ -14,8 +15,8 @@ namespace MemesFinderGreeter.Managers
             foreach(var field in modelFields)
                 greetingsBuilder.Replace($"{{{field.Name}}}", field?.GetValue(chatMember)?.ToString());
 
-            if (adminUsernames.Any())
-                greetingsBuilder.AppendLine(adminUsernames.Aggregate((f, s) => $"\n\n@{f}, @{s}"));
+            greetingsBuilder.AppendLine(adminUsernames.GetFormattedString(admin => $"@{admin}"));
+
             return greetingsBuilder.ToString();
         }
     }
