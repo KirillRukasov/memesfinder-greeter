@@ -58,7 +58,6 @@ namespace MemesFinderGreeter
                 await _telegramBotClient.SendTextMessageAsync(
                     chatId: member.ChatId,
                     messageThreadId: currentChatOptions.GreetingsThreadId,
-                    parseMode: Telegram.Bot.Types.Enums.ParseMode.MarkdownV2,
                     text: formattedGreeting);
             }
         }
