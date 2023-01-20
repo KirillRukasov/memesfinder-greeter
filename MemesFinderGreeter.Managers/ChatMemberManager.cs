@@ -17,13 +17,13 @@ public class ChatMemberManager : IChatMemberManager
         _logger = logger;
     }
 
-    public async Task<IEnumerable<string?>> GetChatAdminsUsernames(long chatId)
+    public async Task<IEnumerable<string>> GetChatAdminsUsernames(long chatId)
     {
-        var result = new List<string?>();
+        var result = new List<string>();
         try
         {
             var chatAdmins = await _telegramBotClient.GetChatAdministratorsAsync(chatId);
-            result = chatAdmins.Select(admin => admin.User.Username)
+            result = chatAdmins.Select(admin => admin.User.Username ?? admin.User.FirstName)
                                 .ToList();
         }
         catch(Exception ex)
