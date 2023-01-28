@@ -15,7 +15,7 @@ namespace MemesFinderGreeter.Managers
             foreach(var field in modelFields)
                 greetingsBuilder.Replace($"{{{field.Name}}}", field?.GetValue(chatMember)?.ToString());
 
-            greetingsBuilder.AppendLine(adminUsernames.GetFormattedString(admin => $"@{admin}"));
+            greetingsBuilder.AppendLine($"\n\n{adminUsernames.GetFormattedString(admin => $"@{admin}")}");
 
             return greetingsBuilder.ToString();
         }
