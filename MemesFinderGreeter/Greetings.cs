@@ -1,13 +1,14 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using MemesFinderGreeter.Extensions;
+﻿using MemesFinderGreeter.Extensions;
 using MemesFinderGreeter.Interfaces;
 using MemesFinderGreeter.Options;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System.Linq;
+using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
 namespace MemesFinderGreeter
 {
@@ -34,7 +35,7 @@ namespace MemesFinderGreeter
         }
 
         [FunctionName("Greetings")]
-        public async Task Run([ServiceBusTrigger("allmessages", "greeter", Connection = "ServiceBusOptions")]Update tgIncomeMessage)
+        public async Task Run([ServiceBusTrigger("allmessages", "greeter", Connection = "ServiceBusOptions")] Update tgIncomeMessage)
         {
             var newMembers = _chatMemberManager.GetNewChatMember(tgIncomeMessage);
             if (!newMembers.Any())
@@ -55,10 +56,28 @@ namespace MemesFinderGreeter
                 var formattedGreeting = _greetingsFormatter
                     .FormatGreetingMessage(currentChatOptions.GreetingsMarkdownTemplate, member, chatAdminsUsernames);
 
+                var mention = new MessageEntity
+                {
+                    Type = MessageEntityType.TextMention,
+                    Offset = formattedGreeting.IndexOf(member.PreferredUsername),
+                    Length = member.PreferredUsername.Length
+                };
+
+                var rulesLink = new MessageEntity
+                {
+                    Type = MessageEntityType.Url,
+                    Offset = formattedGreeting.IndexOf(currentChatOptions.GreetingsSubstituteTextLink),
+                    Length = currentChatOptions.GreetingsSubstituteTextLink.Length,
+                    Url = currentChatOptions.GreetingsRulesLink
+                };
+
                 await _telegramBotClient.SendTextMessageAsync(
                     chatId: member.ChatId,
+                    text: formattedGreeting,
                     messageThreadId: currentChatOptions.GreetingsThreadId,
-                    text: formattedGreeting);
+                    ParseMode.Markdown,
+                    entities: new[] { mention, rulesLink }
+                    );
             }
         }
     }
