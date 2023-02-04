@@ -1,5 +1,6 @@
 ﻿using MemesFinderGreeter.Extensions;
 using MemesFinderGreeter.Interfaces;
+using MemesFinderGreeter.Models;
 using MemesFinderGreeter.Options;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
@@ -51,10 +52,16 @@ namespace MemesFinderGreeter
                 return;
             }
 
+            var greetingTextField = new GreetingTextField
+            {
+                SubstituteTextLink = currentChatOptions.GreetingsSubstituteTextLink,
+                RulesLink = currentChatOptions.GreetingsRulesLink
+            };
+
             foreach (var member in newMembers)
             {
                 var formattedGreeting = _greetingsFormatter
-                    .FormatGreetingMessage(currentChatOptions.GreetingsMarkdownTemplate, member, chatAdminsUsernames);
+                    .FormatGreetingMessage(currentChatOptions.GreetingsMarkdownTemplate, member, chatAdminsUsernames, greetingTextField);
 
                 var mention = new MessageEntity
                 {
@@ -63,20 +70,12 @@ namespace MemesFinderGreeter
                     Length = member.PreferredUsername.Length
                 };
 
-                var rulesLink = new MessageEntity
-                {
-                    Type = MessageEntityType.Url,
-                    Offset = formattedGreeting.IndexOf(currentChatOptions.GreetingsSubstituteTextLink),
-                    Length = currentChatOptions.GreetingsSubstituteTextLink.Length,
-                    Url = currentChatOptions.GreetingsRulesLink
-                };
-
                 await _telegramBotClient.SendTextMessageAsync(
                     chatId: member.ChatId,
                     text: formattedGreeting,
                     messageThreadId: currentChatOptions.GreetingsThreadId,
                     ParseMode.Markdown,
-                    entities: new[] { mention, rulesLink }
+                    entities: new[] { mention }
                     );
             }
         }

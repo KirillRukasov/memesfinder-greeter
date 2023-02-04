@@ -26,9 +26,9 @@ public class ChatMemberManager : IChatMemberManager
             result = chatAdmins.Select(admin => admin.User.Username ?? admin.User.FirstName)
                                 .ToList();
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
-            _logger.LogError("Error getting chat adminse", ex);
+            _logger.LogError("Error getting chat admins", ex);
         }
         return result;
     }
@@ -38,7 +38,7 @@ public class ChatMemberManager : IChatMemberManager
         if (tgUpdate?.Message?.NewChatMembers is null)
             yield break;
 
-        foreach(var member in tgUpdate.Message.NewChatMembers)
+        foreach (var member in tgUpdate.Message.NewChatMembers)
         {
             yield return new NewChatMember
             {
