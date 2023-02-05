@@ -1,13 +1,15 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using MemesFinderGreeter.Extensions;
+﻿using MemesFinderGreeter.Extensions;
 using MemesFinderGreeter.Interfaces;
+using MemesFinderGreeter.Models;
 using MemesFinderGreeter.Options;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System.Linq;
+using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
 namespace MemesFinderGreeter
 {
@@ -34,7 +36,7 @@ namespace MemesFinderGreeter
         }
 
         [FunctionName("Greetings")]
-        public async Task Run([ServiceBusTrigger("allmessages", "greeter", Connection = "ServiceBusOptions")]Update tgIncomeMessage)
+        public async Task Run([ServiceBusTrigger("allmessages", "greeter", Connection = "ServiceBusOptions")] Update tgIncomeMessage)
         {
             var newMembers = _chatMemberManager.GetNewChatMember(tgIncomeMessage);
             if (!newMembers.Any())
@@ -50,15 +52,31 @@ namespace MemesFinderGreeter
                 return;
             }
 
+            var greetingTextField = new GreetingTextField
+            {
+                SubstituteTextLink = currentChatOptions.GreetingsSubstituteTextLink,
+                RulesLink = currentChatOptions.GreetingsRulesLink
+            };
+
             foreach (var member in newMembers)
             {
                 var formattedGreeting = _greetingsFormatter
-                    .FormatGreetingMessage(currentChatOptions.GreetingsMarkdownTemplate, member, chatAdminsUsernames);
+                    .FormatGreetingMessage(currentChatOptions.GreetingsMarkdownTemplate, member, chatAdminsUsernames, greetingTextField);
+
+                var mention = new MessageEntity
+                {
+                    Type = MessageEntityType.TextMention,
+                    Offset = formattedGreeting.IndexOf(member.PreferredUsername),
+                    Length = member.PreferredUsername.Length
+                };
 
                 await _telegramBotClient.SendTextMessageAsync(
                     chatId: member.ChatId,
+                    text: formattedGreeting,
                     messageThreadId: currentChatOptions.GreetingsThreadId,
-                    text: formattedGreeting);
+                    ParseMode.Markdown,
+                    entities: new[] { mention }
+                    );
             }
         }
     }

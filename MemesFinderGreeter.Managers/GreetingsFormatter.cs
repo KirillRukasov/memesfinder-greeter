@@ -1,19 +1,23 @@
-﻿using System;
-using System.Text;
-using MemesFinderGreeter.Interfaces;
+﻿using MemesFinderGreeter.Interfaces;
 using MemesFinderGreeter.Managers.Extensions;
+using MemesFinderGreeter.Models;
+using System.Text;
 
 namespace MemesFinderGreeter.Managers
 {
-	public class GreetingsFormatter : IGreetingsFormatter
+    public class GreetingsFormatter : IGreetingsFormatter
     {
-        public string FormatGreetingMessage<T>(string template, T chatMember, IEnumerable<string> adminUsernames)
+        public string FormatGreetingMessage<T>(string template, T chatMember, IEnumerable<string> adminUsernames, GreetingTextField greetingTextField)
         {
             var greetingsBuilder = new StringBuilder(template);
-            var modelFields = typeof(T).GetProperties();
+            var chatMemberFields = typeof(T).GetProperties();
+            var greetingTextFields = typeof(GreetingTextField).GetProperties();
 
-            foreach(var field in modelFields)
+            foreach (var field in chatMemberFields)
                 greetingsBuilder.Replace($"{{{field.Name}}}", field?.GetValue(chatMember)?.ToString());
+
+            foreach (var field in greetingTextFields)
+                greetingsBuilder.Replace($"{{{field.Name}}}", field?.GetValue(greetingTextField)?.ToString());
 
             greetingsBuilder.AppendLine($"\n\n{adminUsernames.GetFormattedString(admin => $"@{admin}")}");
 
