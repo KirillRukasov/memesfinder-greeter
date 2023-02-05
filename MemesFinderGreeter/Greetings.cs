@@ -54,7 +54,6 @@ namespace MemesFinderGreeter
 
             var greetingTextField = new GreetingTextField
             {
-                SubstituteTextLink = currentChatOptions.GreetingsSubstituteTextLink,
                 RulesLink = currentChatOptions.GreetingsRulesLink
             };
 
