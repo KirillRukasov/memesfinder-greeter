@@ -62,19 +62,11 @@ namespace MemesFinderGreeter
                 var formattedGreeting = _greetingsFormatter
                     .FormatGreetingMessage(currentChatOptions.GreetingsMarkdownTemplate, member, chatAdminsUsernames, greetingTextField);
 
-                var mention = new MessageEntity
-                {
-                    Type = MessageEntityType.TextMention,
-                    Offset = formattedGreeting.IndexOf(member.PreferredUsername),
-                    Length = member.PreferredUsername.Length
-                };
-
                 await _telegramBotClient.SendTextMessageAsync(
                     chatId: member.ChatId,
                     text: formattedGreeting,
                     messageThreadId: currentChatOptions.GreetingsThreadId,
-                    ParseMode.Markdown,
-                    entities: new[] { mention }
+                    ParseMode.Markdown
                     );
             }
         }
