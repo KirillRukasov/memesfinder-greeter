@@ -37,10 +37,6 @@ namespace MemesFinderGreeter
         [FunctionName("Greetings")]
         public async Task Run([ServiceBusTrigger("allmessages", "greeter", Connection = "ServiceBusOptions")] Update tgIncomeMessage)
         {
-            var newMembers = _chatMemberManager.GetNewChatMember(tgIncomeMessage);
-            if (!newMembers.Any())
-                return;
-
             var currentChat = tgIncomeMessage.GetChat();
             var chatAdminsUsernames = await _chatMemberManager.GetChatAdminsUsernames(currentChat.Id);
             var currentChatOptions = _options.ChatOptions.FirstOrDefault(options => options.ChatId == currentChat.Id);
@@ -51,10 +47,14 @@ namespace MemesFinderGreeter
                 return;
             }
 
+            var newMembers = _chatMemberManager.GetNewChatMember(tgIncomeMessage, currentChatOptions.GreetingsRulesLink);
+            if (!newMembers.Any())
+                return;
+
             foreach (var member in newMembers)
             {
                 var formattedGreeting = _greetingsFormatter
-                    .FormatGreetingMessage(currentChatOptions.GreetingsMarkdownTemplate, member, chatAdminsUsernames, currentChatOptions.GreetingsRulesLink);
+                    .FormatGreetingMessage(currentChatOptions.GreetingsMarkdownTemplate, member, chatAdminsUsernames);
 
                 await _telegramBotClient.SendTextMessageAsync(
                     chatId: member.ChatId,
