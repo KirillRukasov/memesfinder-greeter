@@ -1,5 +1,6 @@
 ﻿using MemesFinderGreeter.Interfaces;
 using MemesFinderGreeter.Models;
+using MemesFinderGreeter.Models.Options;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -26,27 +27,28 @@ public class ChatMemberManager : IChatMemberManager
             result = chatAdmins.Select(admin => admin.User.Username ?? admin.User.FirstName)
                                 .ToList();
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
-            _logger.LogError("Error getting chat adminse", ex);
+            _logger.LogError("Error getting chat admins", ex);
         }
         return result;
     }
 
-    public IEnumerable<NewChatMember> GetNewChatMember(Update tgUpdate)
+    public IEnumerable<GreetingMemberSettings> GetNewChatMember(Update tgUpdate, ChatOptions chatOptions)
     {
         if (tgUpdate?.Message?.NewChatMembers is null)
             yield break;
 
-        foreach(var member in tgUpdate.Message.NewChatMembers)
+        foreach (var member in tgUpdate.Message.NewChatMembers)
         {
-            yield return new NewChatMember
+            yield return new GreetingMemberSettings
             {
                 ChatId = tgUpdate.Message.Chat.Id,
                 FirstName = member.FirstName,
                 LastName = member.LastName,
                 Username = member.Username,
-                MemberId = member.Id
+                MemberId = member.Id,
+                RulesLink = chatOptions.GreetingsRulesLink
             };
         }
 

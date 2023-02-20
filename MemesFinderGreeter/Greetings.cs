@@ -1,13 +1,15 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using MemesFinderGreeter.Extensions;
+﻿using MemesFinderGreeter.Extensions;
 using MemesFinderGreeter.Interfaces;
+using MemesFinderGreeter.Models.Options;
 using MemesFinderGreeter.Options;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System.Linq;
+using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
 namespace MemesFinderGreeter
 {
@@ -34,12 +36,8 @@ namespace MemesFinderGreeter
         }
 
         [FunctionName("Greetings")]
-        public async Task Run([ServiceBusTrigger("allmessages", "greeter", Connection = "ServiceBusOptions")]Update tgIncomeMessage)
+        public async Task Run([ServiceBusTrigger("allmessages", "greeter", Connection = "ServiceBusOptions")] Update tgIncomeMessage)
         {
-            var newMembers = _chatMemberManager.GetNewChatMember(tgIncomeMessage);
-            if (!newMembers.Any())
-                return;
-
             var currentChat = tgIncomeMessage.GetChat();
             var chatAdminsUsernames = await _chatMemberManager.GetChatAdminsUsernames(currentChat.Id);
             var currentChatOptions = _options.ChatOptions.FirstOrDefault(options => options.ChatId == currentChat.Id);
@@ -50,6 +48,10 @@ namespace MemesFinderGreeter
                 return;
             }
 
+            var newMembers = _chatMemberManager.GetNewChatMember(tgIncomeMessage, currentChatOptions);
+            if (!newMembers.Any())
+                return;
+
             foreach (var member in newMembers)
             {
                 var formattedGreeting = _greetingsFormatter
@@ -57,8 +59,10 @@ namespace MemesFinderGreeter
 
                 await _telegramBotClient.SendTextMessageAsync(
                     chatId: member.ChatId,
+                    text: formattedGreeting,
                     messageThreadId: currentChatOptions.GreetingsThreadId,
-                    text: formattedGreeting);
+                    ParseMode.Markdown
+                    );
             }
         }
     }
