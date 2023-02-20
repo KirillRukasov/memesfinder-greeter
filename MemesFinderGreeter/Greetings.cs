@@ -1,5 +1,6 @@
 ﻿using MemesFinderGreeter.Extensions;
 using MemesFinderGreeter.Interfaces;
+using MemesFinderGreeter.Models.Options;
 using MemesFinderGreeter.Options;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
@@ -47,7 +48,7 @@ namespace MemesFinderGreeter
                 return;
             }
 
-            var newMembers = _chatMemberManager.GetNewChatMember(tgIncomeMessage, currentChatOptions.GreetingsRulesLink);
+            var newMembers = _chatMemberManager.GetNewChatMember(tgIncomeMessage, currentChatOptions);
             if (!newMembers.Any())
                 return;
 

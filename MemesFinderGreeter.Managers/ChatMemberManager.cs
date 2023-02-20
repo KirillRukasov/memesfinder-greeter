@@ -1,5 +1,6 @@
 ﻿using MemesFinderGreeter.Interfaces;
 using MemesFinderGreeter.Models;
+using MemesFinderGreeter.Models.Options;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -33,7 +34,7 @@ public class ChatMemberManager : IChatMemberManager
         return result;
     }
 
-    public IEnumerable<GreetingMemberSettings> GetNewChatMember(Update tgUpdate, string rulesLink)
+    public IEnumerable<GreetingMemberSettings> GetNewChatMember(Update tgUpdate, ChatOptions chatOptions)
     {
         if (tgUpdate?.Message?.NewChatMembers is null)
             yield break;
@@ -47,7 +48,7 @@ public class ChatMemberManager : IChatMemberManager
                 LastName = member.LastName,
                 Username = member.Username,
                 MemberId = member.Id,
-                RulesLink = rulesLink
+                RulesLink = chatOptions.GreetingsRulesLink
             };
         }
 

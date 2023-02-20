@@ -1,4 +1,4 @@
-﻿namespace MemesFinderGreeter.Options
+﻿namespace MemesFinderGreeter.Models.Options
 {
     public class ChatOptions
     {
