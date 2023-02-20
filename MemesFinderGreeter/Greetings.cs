@@ -1,6 +1,5 @@
 ﻿using MemesFinderGreeter.Extensions;
 using MemesFinderGreeter.Interfaces;
-using MemesFinderGreeter.Models;
 using MemesFinderGreeter.Options;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
@@ -38,10 +37,6 @@ namespace MemesFinderGreeter
         [FunctionName("Greetings")]
         public async Task Run([ServiceBusTrigger("allmessages", "greeter", Connection = "ServiceBusOptions")] Update tgIncomeMessage)
         {
-            var newMembers = _chatMemberManager.GetNewChatMember(tgIncomeMessage);
-            if (!newMembers.Any())
-                return;
-
             var currentChat = tgIncomeMessage.GetChat();
             var chatAdminsUsernames = await _chatMemberManager.GetChatAdminsUsernames(currentChat.Id);
             var currentChatOptions = _options.ChatOptions.FirstOrDefault(options => options.ChatId == currentChat.Id);
@@ -52,29 +47,20 @@ namespace MemesFinderGreeter
                 return;
             }
 
-            var greetingTextField = new GreetingTextField
-            {
-                RulesLink = currentChatOptions.GreetingsRulesLink
-            };
+            var newMembers = _chatMemberManager.GetNewChatMember(tgIncomeMessage, currentChatOptions.GreetingsRulesLink);
+            if (!newMembers.Any())
+                return;
 
             foreach (var member in newMembers)
             {
                 var formattedGreeting = _greetingsFormatter
-                    .FormatGreetingMessage(currentChatOptions.GreetingsMarkdownTemplate, member, chatAdminsUsernames, greetingTextField);
-
-                var mention = new MessageEntity
-                {
-                    Type = MessageEntityType.TextMention,
-                    Offset = formattedGreeting.IndexOf(member.PreferredUsername),
-                    Length = member.PreferredUsername.Length
-                };
+                    .FormatGreetingMessage(currentChatOptions.GreetingsMarkdownTemplate, member, chatAdminsUsernames);
 
                 await _telegramBotClient.SendTextMessageAsync(
                     chatId: member.ChatId,
                     text: formattedGreeting,
                     messageThreadId: currentChatOptions.GreetingsThreadId,
-                    ParseMode.Markdown,
-                    entities: new[] { mention }
+                    ParseMode.Markdown
                     );
             }
         }
