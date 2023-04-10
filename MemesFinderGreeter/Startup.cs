@@ -1,6 +1,7 @@
 ﻿using System;
 using MemesFinderGreeter.Interfaces;
 using MemesFinderGreeter.Managers;
+using MemesFinderGreeter.Models.Options;
 using MemesFinderGreeter.Options;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;

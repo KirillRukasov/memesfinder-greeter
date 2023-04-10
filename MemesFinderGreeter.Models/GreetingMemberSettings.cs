@@ -1,6 +1,6 @@
 ﻿namespace MemesFinderGreeter.Models;
 
-public class NewChatMember
+public class GreetingMemberSettings
 {
     public long MemberId { get; set; }
     public string? FirstName { get; set; }
@@ -8,5 +8,6 @@ public class NewChatMember
     public string? Username { get; set; }
     public long ChatId { get; set; }
     public string? PreferredUsername { get => Username ?? FirstName; }
+    public string? RulesLink { get; set; }
 }
 
