@@ -7,11 +7,12 @@
                 "excludedTypes": "Request"
             }
         },
+        "snapshotConfiguration": {
+            "isEnabled": true
+        },
         "logLevel": {
-            "default": "Information",
-            "Host.Results": "Information",
-            "Host.Aggregator": "Information",
-            "Function": "Information"
+            "MemesFinderGreeter.Greetings": "Information",
+            "MemesFinderGreeter.Managers.ChatMemberManager": "Information"
         }
     }
 }
