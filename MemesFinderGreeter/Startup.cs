@@ -6,6 +6,7 @@ using MemesFinderGreeter.Options;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Telegram.Bot;
 
@@ -31,7 +32,10 @@ namespace MemesFinderGreeter
             builder.Services.AddTransient<IChatMemberManager, ChatMemberManager>();
             builder.Services.AddTransient<IGreetingsFormatter, GreetingsFormatter>();
 
-            builder.Services.AddLogging();
+            builder.Services.AddLogging(logBuilder =>
+            {
+                logBuilder.AddConsole();
+            });
         }
     }
 }
